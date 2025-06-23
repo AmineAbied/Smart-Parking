@@ -12,6 +12,8 @@ img2_blur = cv2.GaussianBlur(img2_gray, (5, 5), 0)
 
 diff = cv2.absdiff(img1_blur, img2_blur)
 
-cv2.imshow("Phase de test :", diff)
+_, diff_thresh = cv2.threshold(diff, 30, 255, cv2.THRESH_BINARY)
+
+cv2.imshow("Phase de test :", diff_thresh)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
