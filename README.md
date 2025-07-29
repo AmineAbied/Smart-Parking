@@ -116,4 +116,3 @@ Shows the final result with status over each parking spot.
 *Output (final) :*
 ![image](https://github.com/user-attachments/assets/3374d2e4-9e3a-4b7e-8449-8db71622ea70)
 
--

@@ -46,4 +46,3 @@ for i, (x, y, w, h) in enumerate(parking_spots):
 
 cv2.imshow("Parking Detection", current)
 cv2.waitKey(0)
-cv2.destroyAllWindows()
