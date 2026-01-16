@@ -1,5 +1,5 @@
-import cv2  # type: ignore
-import numpy as np  # type: ignore
+import cv2
+from flask import Flask
 
 # Parking spots
 spot1 = (865, 152, 183, 164)
@@ -51,7 +51,11 @@ for i, (x, y, w, h) in enumerate(parking_spots):
 
 print("Free parking spots: ", free_spots)
 
-from flask import Flask # type: ignore
+desired_spot = str(min(free_spots))
+
+print("Desired spot:", desired_spot)
+
+#Server
 
 app = Flask(__name__)
 
@@ -59,11 +63,13 @@ app = Flask(__name__)
 @app.route("/parking", methods=["GET"])
 def parking():
 
-    return free_spots
+    return desired_spot
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
 
+
+#Image display
 
 cv2.imshow("Parking Detection", current)
 cv2.waitKey(0)
