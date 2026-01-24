@@ -1,23 +1,25 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 
-// 🔧 CHANGE THESE
+// CHANGE THESE
 const char* ssid = "Murphy";
 const char* password = "HjeAZziBkBIpCgH";
-const char* serverURL = "http://192.168.1.12:5000/parking"; // CHANGE IP
+const char* serverURL = "http://192.168.1.10:5000/parking";
 String spot = "";
 
 void setup() {
-  Serial.begin(115200);
+  pinMode(2, OUTPUT);
+  Serial.begin(300);
   delay(1000);
 
   Serial.println("Connecting to WiFi...");
-  WiFi.begin(ssid, password);
+  //WiFi.begin(ssid, password);
 
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-    pinMode(2, OUTPUT);
+    WiFi.begin(ssid, password);
+    delay(10000);
+    Serial.print("WIFI status: ");
+    Serial.println(WiFi.status());
   }
 
   Serial.println("\nWiFi connected");
@@ -33,12 +35,12 @@ void loop() {
 
     int httpCode = http.GET();
 
-    if (httpCode == HTTP_CODE_OK) {  // 200
+    if (httpCode == HTTP_CODE_OK) { 
       spot = http.getString();
-      spot.trim(); // remove \n or spaces
+      spot.trim();
 
       Serial.print("Received from server: ");
-      Serial.println(spot);  // should print "a1"
+      Serial.println(spot);
     } else {
       Serial.print("HTTP error: ");
       Serial.println(httpCode);
@@ -49,12 +51,14 @@ void loop() {
     Serial.println("WiFi disconnected");
   }
 
-  delay(5000);  // request every 5 seconds
+  delay(5000);
 
-  if (spot == "a1") {
+  if (spot == "1") {
     digitalWrite(2, HIGH);
   } else {
     digitalWrite(2, LOW);
       
   }
+
+  
 }
