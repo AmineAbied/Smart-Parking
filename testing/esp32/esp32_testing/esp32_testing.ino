@@ -1,10 +1,12 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
+#include "password.h"
+
 
 // CHANGE THESE
-const char* ssid = "Murphy";
-const char* password = "HjeAZziBkBIpCgH";
-const char* serverURL = "http://192.168.1.10:5000/parking";
+const char* ssid;
+extern const char* password;
+const char* serverURL;
 String spot = "";
 
 void setup() {
