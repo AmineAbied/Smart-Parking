@@ -5,7 +5,7 @@
 // CHANGE THESE
 const char* ssid = "EL FARABI SMART PARKING";
 const char* password = "wlan798027";
-const char* serverURL = "http://192.168.1.10:5000/parking";
+const char* serverURL = "http://192.168.1.4:5000/parking";
 String spot = "";
 
 void setup() {

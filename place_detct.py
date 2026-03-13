@@ -1,5 +1,7 @@
 import cv2
 from flask import Flask
+import os
+import glob
 
 # Parking spots
 spot1 = (865, 152, 183, 164)
@@ -12,8 +14,19 @@ spot7 = (4, 578, 156, 170)
 spot8 = (14, 410, 150, 156)
 
 # Images
+def get_latest_image(folder_path):
+    images = glob.glob(os.path.join(folder_path, "*.jpg"))
+    if not images:
+        return None
+    return max(images, key=os.path.getmtime)
+
+img_dir = "./parking_images"
+
+current = cv2.imread(get_latest_image(img_dir))
+
+
 reference = cv2.imread("reference.jpg")
-current = cv2.imread("current.jpg")
+##current = cv2.imread("./parking_images/current.jpg")
 
 # Grayscale
 ref_gray = cv2.cvtColor(reference, cv2.COLOR_BGR2GRAY)
@@ -51,7 +64,11 @@ for i, (x, y, w, h) in enumerate(parking_spots):
 
 print("Free parking spots: ", free_spots)
 
-desired_spot = str(min(free_spots))
+if free_spots == [] :
+    desired_spot = "No SPOTS"
+
+else :
+    desired_spot = str(free_spots)
 
 print("Desired spot:", desired_spot)
 
