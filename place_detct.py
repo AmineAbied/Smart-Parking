@@ -37,6 +37,7 @@ ref_blur = cv2.GaussianBlur(ref_gray, (5, 5), 0)
 cur_blur = cv2.GaussianBlur(cur_gray, (5, 5), 0)
 
 # Analyse
+cur_blur = cv2.resize(cur_blur, (ref_blur.shape[1], ref_blur.shape[0]))
 diff = cv2.absdiff(ref_blur, cur_blur)
 
 _, diff_thresh = cv2.threshold(diff, 30, 255, cv2.THRESH_BINARY)
@@ -68,7 +69,7 @@ if free_spots == [] :
     desired_spot = "No SPOTS"
 
 else :
-    desired_spot = str(free_spots)
+    desired_spot = str(min(free_spots))
 
 print("Desired spot:", desired_spot)
 
