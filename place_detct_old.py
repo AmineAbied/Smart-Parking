@@ -1,0 +1,92 @@
+import cv2
+from flask import Flask
+import os
+import glob
+
+# Parking spots
+spot1 = (865, 152, 183, 164)
+spot2 = (887, 371, 154, 198)
+spot3 = (880, 576, 154, 176)
+spot4 = (881, 764, 150, 150)
+spot6 = (509, 134, 174, 179)
+spot5 = (705, 145, 133, 166)
+spot7 = (4, 578, 156, 170)
+spot8 = (14, 410, 150, 156)
+
+# Images
+def get_latest_image(folder_path):
+    images = glob.glob(os.path.join(folder_path, "*.jpg"))
+    if not images:
+        return None
+    return max(images, key=os.path.getmtime)
+
+img_dir = "./parking_images"
+
+current = cv2.imread(get_latest_image(img_dir))
+
+reference = cv2.imread("reference.jpg")
+##current = cv2.imread("./parking_images/current.jpg")
+
+# Grayscale
+ref_gray = cv2.cvtColor(reference, cv2.COLOR_BGR2GRAY)
+cur_gray = cv2.cvtColor(current, cv2.COLOR_BGR2GRAY)
+
+# Blur
+ref_blur = cv2.GaussianBlur(ref_gray, (5, 5), 0)
+cur_blur = cv2.GaussianBlur(cur_gray, (5, 5), 0)
+
+# Analyse
+cur_blur = cv2.resize(cur_blur, (ref_blur.shape[1], ref_blur.shape[0]))
+diff = cv2.absdiff(ref_blur, cur_blur)
+
+_, diff_thresh = cv2.threshold(diff, 30, 255, cv2.THRESH_BINARY)
+
+parking_spots = [spot1, spot2, spot3, spot4, spot5, spot6, spot7, spot8]
+
+free_spots = []
+
+for i, (x, y, w, h) in enumerate(parking_spots):
+    spot_diff = diff_thresh[y:y+h, x:x+w]
+    non_zero_count = cv2.countNonZero(spot_diff)
+    area = w * h
+
+    occupancy_ratio = non_zero_count / area
+    status = "Occupied" if occupancy_ratio > 0.1 else "Free"
+
+    if status == "Free":
+        free_spots.append(i + 1)
+
+    color = (0, 0, 255) if status == "Occupied" else (0, 255, 0)
+    cv2.rectangle(current, (x, y), (x+w, y+h), color, 2)
+    cv2.putText(current, f"{status}", (x, y - 10),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
+
+
+print("Free parking spots: ", free_spots)
+
+if free_spots == [] :
+    desired_spot = "No SPOTS"
+
+else :
+    desired_spot = str(min(free_spots))
+
+print("Desired spot:", desired_spot)
+
+#Server
+
+app = Flask(__name__)
+
+
+@app.route("/parking", methods=["GET"])
+def parking():
+
+    return desired_spot
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
+
+
+#Image display
+
+cv2.imshow("Parking Detection", current)
+cv2.waitKey(0)
