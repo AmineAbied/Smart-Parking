@@ -5,17 +5,29 @@ import glob
 import time
 import threading
 
-# ==== Parking Spots ====
-spot1 = (865, 152, 183, 164)
-spot2 = (887, 371, 154, 198)
-spot3 = (880, 576, 154, 176)
-spot4 = (881, 764, 150, 150)
-spot6 = (509, 134, 174, 179)
-spot5 = (705, 145, 133, 166)
-spot7 = (4, 578, 156, 170)
-spot8 = (14, 410, 150, 156)
 
-parking_spots = [spot1, spot2, spot3, spot4, spot5, spot6, spot7, spot8]
+# ==== Parking Spots ====
+# Format: (x, y, width, height)
+
+spot1  = (679, 97,  97, 116)
+spot2  = (563, 92, 103, 121)
+spot3  = (447, 93, 107, 113)
+spot4  = (788, 332,  81, 112)
+spot5  = (679, 331,  95, 115)
+spot6 =  (564, 327,  99, 114)
+spot7  = (449, 326, 98, 114)
+spot8  = (675, 462, 97, 115)
+spot9  = (559, 461,  101, 109)
+spot10  = (448, 459,  97, 110)
+spot11 = (682, 740, 94, 113)
+spot12 = (567, 735, 98, 119)
+spot13 = (446, 734,  103, 115)
+#spot13 = (596, 768, 102, 118)
+#spot14 = (480, 768, 103, 110)
+
+parking_spots = [spot1, spot2, spot3, spot4, spot5, spot6,
+                 spot7, spot8, spot9, spot10, spot11,
+                 spot12, spot13]
 
 # ==== Shared state ====
 desired_spot   = "No SPOTS"
@@ -60,7 +72,7 @@ def analyze():
     free_spots = []
 
     for i, (x, y, w, h) in enumerate(parking_spots):
-        spot_diff      = diff_thresh[y:y+h, x:x+w]
+        spot_diff = diff_thresh[int(y):int(y+h), int(x):int(x+w)]
         non_zero_count = cv2.countNonZero(spot_diff)
         area           = w * h
 
